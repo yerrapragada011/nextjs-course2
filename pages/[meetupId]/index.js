@@ -2,7 +2,7 @@ import { MongoClient, ObjectId } from 'mongodb';
 import { Fragment } from 'react';
 import Head from 'next/head';
 
-import MeetupDetail from '@/components/meetups/MeetupDetail';
+import MeetupDetail from '../../components/meetups/MeetupDetail';
 
 function MeetupDetails(props) {
   return (
@@ -23,18 +23,18 @@ function MeetupDetails(props) {
 
 export async function getStaticPaths() {
   const client = await MongoClient.connect(
-    'mongodb+srv://user:OOnBasIKyvugXFEL@cluster0.cgfnfcz.mongodb.net/meetups?retryWrites=true&w=majority'
+    'mongodb+srv://maximilian:TU6WdZF2EjFWsqUt@cluster0.ntrwp.mongodb.net/meetups?retryWrites=true&w=majority'
   );
   const db = client.db();
 
-  const meetupCollection = db.collection('meetups');
+  const meetupsCollection = db.collection('meetups');
 
-  const meetups = await meetupCollection.find({}, { _id: 1 }).toArray();
+  const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray();
 
   client.close();
 
   return {
-    fallback: true,
+    fallback: 'blocking',
     paths: meetups.map((meetup) => ({
       params: { meetupId: meetup._id.toString() },
     })),
@@ -47,14 +47,14 @@ export async function getStaticProps(context) {
   const meetupId = context.params.meetupId;
 
   const client = await MongoClient.connect(
-    'mongodb+srv://user:OOnBasIKyvugXFEL@cluster0.cgfnfcz.mongodb.net/meetups?retryWrites=true&w=majority'
+    'mongodb+srv://maximilian:TU6WdZF2EjFWsqUt@cluster0.ntrwp.mongodb.net/meetups?retryWrites=true&w=majority'
   );
   const db = client.db();
 
-  const meetupCollection = db.collection('meetups');
+  const meetupsCollection = db.collection('meetups');
 
-  const selectedMeetup = await meetupCollection.findOne({
-    _id: new ObjectId(meetupId),
+  const selectedMeetup = await meetupsCollection.findOne({
+    _id: ObjectId(meetupId),
   });
 
   client.close();
